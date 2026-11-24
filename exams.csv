@@ -1,0 +1,25 @@
+exam_id,course_code,section,course_title
+ISYE2027-A,ISYE 2027,A,Probability with Applications
+ISYE2027-B,ISYE 2027,B,Probability with Applications
+ISYE2028-A,ISYE 2028,A,Basic Statistical Methods
+ISYE2028-B,ISYE 2028,B,Basic Statistical Methods
+ISYE3030-A,ISYE 3030,A,Basic Statistical Methods
+ISYE3039-A,ISYE 3039,A,Methods of Quality Improvement
+ISYE3044-A,ISYE 3044,A,Simulation Analysis and Design
+ISYE3044-B,ISYE 3044,B,Simulation Analysis and Design
+ISYE3103-A,ISYE 3103,A,Introduction to Supply Chain Modeling: Logistics
+ISYE3103-B,ISYE 3103,B,Introduction to Supply Chain Modeling: Logistics
+ISYE3104-A,ISYE 3104,A,Introduction to Supply Chain Modeling: Manufacturing and Warehousing
+ISYE3104-B,ISYE 3104,B,Introduction to Supply Chain Modeling: Manufacturing and Warehousing
+ISYE3133-A,ISYE 3133,A,Engineering Optimization
+ISYE3133-B,ISYE 3133,B,Engineering Optimization
+ISYE3133-C,ISYE 3133,C,Engineering Optimization
+ISYE3232-A,ISYE 3232,A,Stochastic Manufacturing and Service Systems
+ISYE3232-B,ISYE 3232,B,Stochastic Manufacturing and Service Systems
+ISYE3770-A,ISYE 3770,A,Statistics and Applications
+ISYE4031-A,ISYE 4031,A,Regression and Forecasting
+ISYE4034-A,ISYE 4034,A,Decision and Data Analytics
+ISYE4111-A,ISYE 4111,A,Advanced Supply Chain Logistics
+ISYE4112-A,ISYE 4112,A,"Workflow Modeling, Analysis & Design in Manufacturing & Service"
+ISYE4133-A,ISYE 4133,A,Advanced Optimization
+ISYE4134-A,ISYE 4134,A,Constraint Programming
