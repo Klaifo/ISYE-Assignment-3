@@ -17,9 +17,11 @@ Update this whenever we decide something. It feeds the report's "choices" sectio
 - 7 external common exams, all in the evening slot (18:00 to 20:50): P04, P08, P12, P16, P20.
   Two pairs share a period (MATH 1551 + ECE 3710 in P04, MATH 1553 + 1554 in P16).
 - 210 students take an external exam (each takes exactly one).
-- Exam loads: 150 students have 4 exams, 210 have 5 (verify in notebook).
-- Evening to next-morning pairs: P04 -> P05, P16 -> P17, P20 -> P21.
-- Same-day, 30-minute-gap pair: P03 (ends 17:30) -> P04 (starts 18:00).
+- Exam loads: 150 students have 4 exams, 210 have 5.
+- Every consecutive period on a day has a 30 min gap.
+  Same-day back to back pairs that can occur: P03 -> P04, P21 -> P22, P22 -> P23.
+- Evening to 8am next-day pairs: P04 -> P05, P16 -> P17, P20 -> P21.
+- No ISyE period is in the evening, so ISyE exams can never clash with externals.
 
 ## Decided
 
@@ -29,22 +31,47 @@ Update this whenever we decide something. It feeds the report's "choices" sectio
 3. **Each exam is held at exactly one time** (given in the assignment).
 4. **Makeup / unexpected exams are out of scope.** No data for them. Goes in limitations.
 
-## Leaning toward (confirm together)
+## Student penalty (locked)
 
-5. **Back to back counts in two forms:**
-   - same day, consecutive (P03 -> P04, 30 min gap)
-   - overnight (evening exam -> 8am next morning: P04 -> P05, P16 -> P17, P20 -> P21)
-   Overnight may be worse than a same-day pair with a long gap (lost sleep and study night).
-6. **Same-day pairs with a long gap (e.g. morning + evening) get a light penalty or none.**
-   An 8 hour gap leaves time to recover and study.
-7. **3+ exams in one day is the worst case** and should get the heaviest penalty.
+Scored on consecutive exams in each student's timeline.
 
-## Open (decide on our call)
+- Overlapping exams: not allowed (hard constraint)
+- Two exams same day, long gap: 1
+- Back to back, 30 min gap (P03 -> P04, P21 -> P22, P22 -> P23): 3
+- Evening exam -> 8am next day (P04 -> P05, P16 -> P17, P20 -> P21): 5
+- 3+ exams in one day: +10 on top of transitions
+- Only possible 3-exam day is Dec 17 (P21, P22, P23, all b2b) = 3 + 3 + 10 = 16.
+  The "3 exams, 0 or 1 b2b" cases cannot occur in this data.
 
-- Final student workload / fairness metric and penalty weights.
-- Disruption metric: number of exams moved? number of students whose exam time changed? room changes count?
-- How to trade off workload vs. disruption: weighted sum, lexicographic, or a Pareto sweep.
-- Whose interests the model does not capture (instructors, TAs, proctors, room staff, students with accommodations, students outside the pilot).
+Why: overnight is worse than a 30 min b2b (lost sleep and study night).
+A long same-day gap (e.g. morning + evening) leaves time to recover, so it gets a light penalty.
+
+## Disruption (locked)
+
+- Primary: number of sections whose period changed from the draft.
+- Room changes: tracked separately, tiny weight (0.01) so the solver doesn't shuffle rooms for no reason.
+  Changing rooms is less disruptive than changing times.
+- Reported: number of students with at least one exam time changed.
+
+## Tradeoff (proposed)
+
+- Pareto curve: minimize student penalty s.t. at most k exams moved, k = 0, 1, 2, ...
+- Plot 3 rooms vs 4 rooms on one chart. That is the extra room answer.
+- With 3 rooms the board is full, so most moves are swaps (2 disruptions).
+  With 4 rooms an exam can move alone into an empty slot.
+
+## Evaluation (to report)
+
+- Total student penalty
+- Worst-off student's penalty
+- Number of students with any penalty
+- Count of each situation (b2b, overnight, long gap, 3-in-a-day)
+- Sensitivity check: rerun with a second set of weights and compare
+
+## Open
+
+- Whose interests the model does not capture (instructors, TAs, proctors, room staff,
+  students with accommodations, students outside the pilot).
 
 ## Roles
 
