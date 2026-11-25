@@ -1,0 +1,96 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+\setlist{nosep}
+\setlength{\parskip}{4pt}
+\setlength{\parindent}{0pt}
+
+\title{ISyE 3133 PA3: Improving the Final Exam Schedule}
+\author{Kelechi Ejieke \and Temidayo}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+%--------------------------------------------------
+\section{Problem and data}
+
+The draft schedule has no slack: 24 ISyE exams fill exactly 24 room-period slots, so with three rooms any improvement must come from swapping exams. We reschedule 24 ISyE sections for 360 students while keeping reading periods, conflict periods and 7 external common exams fixed.
+
+Only 8 of the 21 regular periods have any room available (P03, P05, P09, P14, P17, P21, P22, P23). With 3 rooms that gives 24 slots; the optional fourth room (Klaus-2443) adds 8 empty slots. Three of the 8 periods fall on Dec 17, so the draft places 9 exams on one day.
+
+Section sizes range from 54 to 66 students, while the smallest room seats 75, so no exam ever needs to be split across rooms. All 7 external exams run in the evening slot (18:00 to 20:50), and 210 of the 360 students take exactly one. No usable ISyE period is in the evening, so ISyE exams cannot clash with externals directly, but they can land right before or after them.
+
+%--------------------------------------------------
+\section{What makes a good schedule}
+
+We score student workload with a weighted penalty on each pair of consecutive exams in a student's timeline, and we score disruption by how many sections change period. Overlapping exams are a hard constraint, not a penalty.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lcl}
+\toprule
+Situation (consecutive exams) & Penalty & Where it can occur \\
+\midrule
+Same day, long gap & 1 & ISyE morning + external evening, or P21 + P23 \\
+Back to back, 30 min gap & 5 & P03$\to$P04, P21$\to$P22, P22$\to$P23 \\
+Evening exam, then 8am next day & 3 & P04$\to$P05, P16$\to$P17, P20$\to$P21 \\
+3+ exams in one day & +10 & Only Dec 17 (P21, P22, P23) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+We rank a 30 minute back to back as the worst pair: there is no time to rest, eat or review before the second exam. An evening exam followed by an 8am exam is next, since the student loses study time but can still sleep and eat. A long same-day gap leaves time to recover. Penalties add per transition, so the only possible 3-exam day (all of Dec 17) scores $5 + 5 + 10 = 20$.
+
+\textbf{Disruption.} The primary measure is the number of sections whose period changes from the draft, since a time change affects every enrolled student and instructor. Room changes are tracked separately with a weight of 0.01, so the solver only moves rooms when it helps. We also report how many students have at least one exam time changed.
+
+\textbf{Tradeoff.} Rather than fixing one weight, we minimize total student penalty subject to at most $k$ sections moved, for $k = 0, 1, 2, \dots$ This traces a Pareto curve that shows what each additional move buys.
+
+\textbf{Room sharing.} Two or more exams may share a room only if they are sections of the same course and fit its capacity. In practice only Klaus-1443 (200 seats) can hold more than one section.
+
+\textbf{Whose interests we miss.} Instructors and TAs (grading load and travel), proctors and room staff, students needing accommodations or makeup exams, and students outside this pilot whose other exams we cannot see.
+
+%--------------------------------------------------
+\section{Baseline: how the draft scores}
+
+The draft has a total student penalty of 907, with 226 of 360 students (63\%) carrying some penalty and no direct conflicts. Nearly all of the cost comes from two sources: back to backs on Dec 17 and overnight pairs after evening externals.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lr}
+\toprule
+Metric & Draft \\
+\midrule
+Total student penalty & 907 \\
+Students with any penalty & 226 of 360 \\
+Worst-off student & 8 \\
+Direct conflicts & 0 \\
+Back to backs (30 min) & 121 (all Dec 17) \\
+Overnight (evening to 8am) & 81 \\
+Same day, long gap & 59 \\
+3 exams in one day & 0 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Back to backs contribute 605 points and overnights 243, together 93\% of the total. This tells the model where to look: spread exams with shared students across Dec 17, and keep exams away from the 8am slot after their students' external exam. Scores come from an evaluator (\texttt{evaluate.py}) written independently of the optimization model, so every solution is checked against the same rules.
+
+%--------------------------------------------------
+\section{Model}
+
+\textit{To be filled once \texttt{model.py} is done: sets, variables, objective, constraints.}
+
+%--------------------------------------------------
+\section{Results and the extra room}
+
+\textit{To be filled after the 3-room and 4-room runs: Pareto curve, chosen schedule, recommendation.}
+
+%--------------------------------------------------
+\section{Limitations and AI disclosure}
+
+\textit{To be filled.}
+
+\end{document}

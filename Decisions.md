@@ -37,13 +37,15 @@ Scored on consecutive exams in each student's timeline.
 
 - Overlapping exams: not allowed (hard constraint)
 - Two exams same day, long gap: 1
-- Back to back, 30 min gap (P03 -> P04, P21 -> P22, P22 -> P23): 3
-- Evening exam -> 8am next day (P04 -> P05, P16 -> P17, P20 -> P21): 5
+- Back to back, 30 min gap (P03 -> P04, P21 -> P22, P22 -> P23): 5
+- Evening exam -> 8am next day (P04 -> P05, P16 -> P17, P20 -> P21): 3
 - 3+ exams in one day: +10 on top of transitions
-- Only possible 3-exam day is Dec 17 (P21, P22, P23, all b2b) = 3 + 3 + 10 = 16.
+- Only possible 3-exam day is Dec 17 (P21, P22, P23, all b2b) = 5 + 5 + 10 = 20.
   The "3 exams, 0 or 1 b2b" cases cannot occur in this data.
 
-Why: overnight is worse than a 30 min b2b (lost sleep and study night).
+Why: a 30 min b2b is the worst pair (no break, no food, no review before the next exam).
+Overnight is next (short night, but time to sleep and eat). Weights were swapped from 3/5 to 5/3 on Nov 24;
+the original 3/5 version is the sensitivity check.
 A long same-day gap (e.g. morning + evening) leaves time to recover, so it gets a light penalty.
 
 ## Disruption (locked)
