@@ -94,6 +94,48 @@ def score(schedule, d, rooms=None):
     return {"summary": summary, "students": students, "moved": moved}
 
 
+def audit(schedule_df, d, max_moves=None):
+    """Check a full schedule (exam_id, period_id, room_id) against every hard rule.
+    Returns a list of problems; an empty list means the schedule is feasible."""
+    problems = []
+    df = schedule_df
+
+    # every exam exactly once
+    counts = df["exam_id"].value_counts()
+    for e in d["E"]:
+        if counts.get(e, 0) != 1:
+            problems.append(f"{e} assigned {counts.get(e, 0)} times")
+    extra = set(df["exam_id"]) - set(d["E"])
+    if extra:
+        problems.append(f"unknown exams: {sorted(extra)}")
+
+    # room-period must be available (and therefore a regular period)
+    for r in df.itertuples():
+        if (r.room_id, r.period_id) not in d["A"]:
+            problems.append(f"{r.exam_id} in unavailable slot {r.room_id} {r.period_id}")
+
+    # capacity and same-course sharing
+    for (room, p), g in df.groupby(["room_id", "period_id"]):
+        seats = sum(d["size"][e] for e in g["exam_id"])
+        if seats > d["cap"].get(room, 0):
+            problems.append(f"{room} {p}: {seats} students > capacity {d['cap'].get(room, 0)}")
+        if len({d["course"][e] for e in g["exam_id"]}) > 1:
+            problems.append(f"{room} {p}: different courses share the room {list(g['exam_id'])}")
+
+    # no student conflicts (ISyE vs ISyE and ISyE vs external)
+    period = dict(zip(df["exam_id"], df["period_id"]))
+    n_conf = int(score(period, d)["summary"]["conflicts"])
+    if n_conf:
+        problems.append(f"{n_conf} student conflicts")
+
+    # disruption limit
+    if max_moves is not None:
+        moved = sum(period[e] != d["draft_period"][e] for e in d["E"])
+        if moved > max_moves:
+            problems.append(f"{moved} moves > limit {max_moves}")
+    return problems
+
+
 if __name__ == "__main__":
     # baseline: score the draft. python evaluate.py
     from data import load_data
