@@ -5,3 +5,6 @@ __pycache__/
 *.log
 gurobi.lic
 .DS_Store
+*.aux
+*.out
+*.synctex.gz
